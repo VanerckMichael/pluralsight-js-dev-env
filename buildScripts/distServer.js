@@ -4,20 +4,15 @@
 import  express from "express";
 import path from "path";
 import open from "open";
-import webpack from "webpack";
-import config from "../webpack.config.dev";
+import compression from 'compression';
 
 /* eslint-disable no-console */
 
 const port = 3000;
 const app = express();
-const compiler = webpack(config);
 
-app.use(
-  require("webpack-dev-middleware")(compiler, {
-    publicPath: config.output.publicPath,
-  })
-);
+app.use(compression());
+app.use(express.static('dist'));
 
 app.get("/users", function(req, res) {
   // Hard coding for simplicity. Pretend this hits a real database
@@ -29,7 +24,7 @@ app.get("/users", function(req, res) {
 });
 
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "../src/index.html"));
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 app.listen(port, function (err) {
